@@ -1,7 +1,7 @@
 # Roadmap
 
 - [x] Remove committed __pycache__/*.pyc from git (git rm -r --cached) and keep them ignored
-- [ ] Rename requirement.txt -> requirements.txt with pinned versions
+- [x] Rename requirement.txt -> requirements.txt with pinned versions
 - [ ] Add .env.example listing required env vars (names only, no values)
 - [ ] Write a professional README (overview, architecture with bizgpt_graph.png, setup, usage, env vars)
 - [ ] Add centralized config module (pydantic-settings) replacing scattered os.getenv
@@ -27,3 +27,4 @@
 ## Changelog
 
 - 2026-11-09: Untracked committed `__pycache__`/`*.pyc` files (already ignored via .gitignore); added this roadmap.
+- 2026-11-10: Renamed requirement.txt -> requirements.txt and pinned versions.
