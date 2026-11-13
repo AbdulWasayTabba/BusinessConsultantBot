@@ -1,5 +1,5 @@
 from graph.state import BizGPTState
-from langchain_ollama import ChatOllama
+from config import get_llm
 from pydantic import BaseModel
 
 class MarketOutput(BaseModel):
@@ -8,7 +8,7 @@ class MarketOutput(BaseModel):
     customer_behavior: str
     demand_shifts: str
 
-llm = ChatOllama(model="phi3:mini")
+llm = get_llm()
 struct_llm = llm.with_structured_output(MarketOutput)
 
 with open("prompts/market_agent.txt", "r") as f:

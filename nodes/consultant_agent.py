@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from langchain_ollama import ChatOllama
+from config import get_llm, get_settings
 from graph.state import BizGPTState
 
 class ConsultantAgentOutput(BaseModel):
@@ -8,7 +8,7 @@ class ConsultantAgentOutput(BaseModel):
     generate_recommendation: str
     strategic_direction: str
 
-llm = ChatOllama(model="qwen3:8b",streaming=True)
+llm = get_llm(get_settings().consultant_model, streaming=True)
 llm_struct = llm.with_structured_output(ConsultantAgentOutput)
 
 # Note: Fixed the spelling to "consultant_agent.txt"

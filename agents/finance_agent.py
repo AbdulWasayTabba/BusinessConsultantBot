@@ -1,5 +1,5 @@
 from graph.state import BizGPTState
-from langchain_ollama import ChatOllama
+from config import get_llm
 from pydantic import BaseModel
 
 
@@ -11,7 +11,7 @@ class FinanceOutput(BaseModel):
     financial_risks: list[str]
 
 
-llm = ChatOllama(model="phi3:mini")
+llm = get_llm()
 struct_llm = llm.with_structured_output(FinanceOutput)
 
 with open("prompts/finance_agent.txt", "r") as f:

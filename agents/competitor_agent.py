@@ -1,5 +1,5 @@
 from graph.state import BizGPTState
-from langchain_ollama import ChatOllama
+from config import get_llm
 from pydantic import BaseModel
 
 class CompetitorOutput(BaseModel):
@@ -8,7 +8,7 @@ class CompetitorOutput(BaseModel):
     positioning: str
     strengths_and_weaknesses: list[str]
 
-llm = ChatOllama(model="phi3:mini")
+llm = get_llm()
 struct_llm = llm.with_structured_output(CompetitorOutput)
 
 with open("prompts/competitor_agent.txt", "r") as f:

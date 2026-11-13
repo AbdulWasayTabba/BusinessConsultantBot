@@ -1,12 +1,12 @@
 from pydantic import BaseModel
 from graph.state import BizGPTState
-from langchain_ollama import ChatOllama
+from config import get_llm
 
 class MissingInfo(BaseModel):
     info_required:list[str]
     question:str
 
-llm = ChatOllama(model="phi3:mini")
+llm = get_llm()
 
 llm_struct = llm.with_structured_output(MissingInfo)
 

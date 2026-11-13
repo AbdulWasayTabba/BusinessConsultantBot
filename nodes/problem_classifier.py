@@ -1,7 +1,7 @@
 from graph.state import BizGPTState
 from typing import Literal
 from pydantic import BaseModel
-from langchain_ollama import ChatOllama
+from config import get_llm
 
 class ProblemClassifierOutput(BaseModel):
     problem_categories: list[
@@ -19,7 +19,7 @@ class ProblemClassifierOutput(BaseModel):
         ]
     ]
 
-llm = ChatOllama(model="phi3:mini")
+llm = get_llm()
 struct_llm = llm.with_structured_output(ProblemClassifierOutput)
 
 with open("prompts/problem_classifier.txt","r") as f:

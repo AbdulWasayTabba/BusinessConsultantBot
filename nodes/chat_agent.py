@@ -1,10 +1,7 @@
 from graph.state import BizGPTState
-from langchain_ollama import ChatOllama
+from config import get_llm
 
-llm = ChatOllama(
-    model="phi3:mini",
-    temperature=0
-)
+llm = get_llm(temperature=0)
 
 
 def chat_agent(state: BizGPTState):

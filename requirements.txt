@@ -18,3 +18,6 @@ httpx==0.28.1
 
 # Search
 tavily-python==0.7.27
+
+# Config
+pydantic-settings>=2.6,<3

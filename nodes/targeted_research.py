@@ -1,4 +1,4 @@
-from langchain_ollama import ChatOllama
+from config import get_llm
 from pydantic import BaseModel
 
 from graph.state import BizGPTState
@@ -9,10 +9,7 @@ class TargetedResearchOutput(BaseModel):
     evidence_added: list[str]
 
 
-llm = ChatOllama(
-    model="phi3:mini",
-    temperature=0
-)
+llm = get_llm(temperature=0)
 
 llm_struct = llm.with_structured_output(
     TargetedResearchOutput

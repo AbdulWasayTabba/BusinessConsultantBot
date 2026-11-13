@@ -1,14 +1,14 @@
 from graph.state import BizGPTState
 from typing import Literal
 from pydantic import BaseModel
-from langchain_ollama import ChatOllama
+from config import get_llm
 
 
 class IntentRouterOutput(BaseModel):
     route_type: Literal["greeting" , "business_qa", "report_revision","follow_up_q"
                         , "business_analysis", "invalid"]
 
-llm = ChatOllama(model="phi3:mini")
+llm = get_llm()
 structured_llm = llm.with_structured_output(IntentRouterOutput)
 
 with open("prompts/intent_router.txt",'r') as f:

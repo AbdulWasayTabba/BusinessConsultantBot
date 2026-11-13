@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from langchain_ollama import ChatOllama
+from config import get_llm
 from graph.state import BizGPTState
 
 
@@ -9,7 +9,7 @@ class RiskChangeReviewerOutput(BaseModel):
     change_management_considerations: list[str]
 
 
-llm = ChatOllama(model="phi3:mini")
+llm = get_llm()
 
 llm_struct = llm.with_structured_output(
     RiskChangeReviewerOutput
