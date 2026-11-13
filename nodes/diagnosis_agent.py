@@ -1,6 +1,6 @@
 from graph.state import BizGPTState
 from pydantic import BaseModel
-from langchain_ollama import ChatOllama
+from config import get_llm
 
 
 
@@ -12,7 +12,7 @@ class DiagnosisOutput(BaseModel):
 with open("prompts/diagnosis_agent.txt","r") as f:
     prompt = f.read()
 
-llm = ChatOllama(model = "phi3:mini")
+llm = get_llm()
 
 structured_llm = llm.with_structured_output(DiagnosisOutput)
 

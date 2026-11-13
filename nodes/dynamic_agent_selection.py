@@ -1,7 +1,7 @@
 from graph.state import BizGPTState
 from typing import Literal
 from pydantic import BaseModel
-from langchain_ollama import ChatOllama
+from config import get_llm
 
 
 class DynamicAgentSelectionOutput(BaseModel):
@@ -17,7 +17,7 @@ class DynamicAgentSelectionOutput(BaseModel):
     ]
 
 
-llm = ChatOllama(model="phi3:mini")
+llm = get_llm()
 
 struct_llm = llm.with_structured_output(
     DynamicAgentSelectionOutput

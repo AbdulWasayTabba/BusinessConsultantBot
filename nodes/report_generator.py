@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from langchain_ollama import ChatOllama
+from config import get_llm, get_settings
 from graph.state import BizGPTState
 
 
@@ -12,7 +12,7 @@ class ReportGeneratorOutput(BaseModel):
     expected_outcomes: list[str]
 
 
-llm = ChatOllama(model="qwen3:8b", streaming=True)
+llm = get_llm(get_settings().consultant_model, streaming=True)
 
 llm_struct = llm.with_structured_output(
     ReportGeneratorOutput

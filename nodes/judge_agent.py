@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from langchain_ollama import ChatOllama
+from config import get_llm, get_settings
 
 from graph.state import BizGPTState
 
@@ -11,7 +11,7 @@ class JudgeOutput(BaseModel):
     research_needed: bool
 
 
-llm = ChatOllama(model="llama3.2:3b")
+llm = get_llm(get_settings().judge_model)
 
 llm_struct = llm.with_structured_output(JudgeOutput)
 

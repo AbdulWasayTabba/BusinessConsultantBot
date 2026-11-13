@@ -1,5 +1,5 @@
 from graph.state import BizGPTState
-from langchain_ollama import ChatOllama
+from config import get_llm
 from pydantic import BaseModel
 
 class CustomerOutput(BaseModel):
@@ -8,7 +8,7 @@ class CustomerOutput(BaseModel):
     satisfaction: str
     retention: str
 
-llm = ChatOllama(model="phi3:mini")
+llm = get_llm()
 struct_llm = llm.with_structured_output(CustomerOutput)
 
 with open("prompts/customer_agent.txt", "r") as f:

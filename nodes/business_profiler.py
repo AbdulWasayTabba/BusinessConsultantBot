@@ -1,6 +1,6 @@
 from graph.state import BizGPTState
 from pydantic import BaseModel
-from langchain_ollama import ChatOllama
+from config import get_llm
 
 class BusinessProfilerOutput(BaseModel):
     industry: str
@@ -12,7 +12,7 @@ class BusinessProfilerOutput(BaseModel):
     pain_points: list[str]
     business_stage: str
 
-llm = ChatOllama(model = "phi3:mini")
+llm = get_llm()
 
 llm_struct = llm.with_structured_output(BusinessProfilerOutput)
 

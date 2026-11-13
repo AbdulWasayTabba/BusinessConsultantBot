@@ -1,9 +1,9 @@
 from pydantic import BaseModel
-from langchain_ollama import ChatOllama
+from config import get_llm, get_settings
 
 from graph.state import BizGPTState
 
-llm = ChatOllama(model = "qwen3:8b")
+llm = get_llm(get_settings().consultant_model)
 
 class ResearchSynthesizerOutput(BaseModel):
     all_outputs_combined:str

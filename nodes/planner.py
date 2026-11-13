@@ -1,13 +1,13 @@
 from graph.state import BizGPTState
 
 from pydantic import BaseModel
-from langchain_ollama import ChatOllama
+from config import get_llm, get_settings
 
 class PlannerOutput(BaseModel):
     research_tasks: list[str]
 
 
-llm = ChatOllama(model= "qwen3:8b",streaming=True)
+llm = get_llm(get_settings().consultant_model, streaming=True)
 struct_llm = llm.with_structured_output(PlannerOutput)
 
 
