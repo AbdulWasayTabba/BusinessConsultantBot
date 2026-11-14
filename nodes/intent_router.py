@@ -1,8 +1,11 @@
+from logging_setup import get_logger
 from graph.state import BizGPTState
 from typing import Literal
 from pydantic import BaseModel
 from config import get_llm
 
+
+logger = get_logger(__name__)
 
 class IntentRouterOutput(BaseModel):
     route_type: Literal["greeting" , "business_qa", "report_revision","follow_up_q"
@@ -16,7 +19,7 @@ with open("prompts/intent_router.txt",'r') as f:
 
 
 def intent_router(state: BizGPTState):
-    print("entering intent router")
+    logger.info("node_enter", extra={"node": "intent_router"})
     result  = structured_llm.invoke(
     f"{prompt}\n\nUser Input:\n{state.get('user_input', '')}"
 )

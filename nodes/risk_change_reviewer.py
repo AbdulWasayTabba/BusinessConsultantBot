@@ -1,7 +1,10 @@
+from logging_setup import get_logger
 from pydantic import BaseModel
 from config import get_llm
 from graph.state import BizGPTState
 
+
+logger = get_logger(__name__)
 
 class RiskChangeReviewerOutput(BaseModel):
     implementation_risks: list[str]
@@ -21,7 +24,7 @@ with open("prompts/risk_change_reviewer.txt", "r") as f:
 
 
 def risk_change_reviewer(state: BizGPTState):
-    print("entering risk change reviewer")
+    logger.info("node_enter", extra={"node": "risk_change_reviewer"})
     result = llm_struct.invoke(
         f"""
         {prompt}

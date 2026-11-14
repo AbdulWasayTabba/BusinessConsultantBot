@@ -1,7 +1,10 @@
+from logging_setup import get_logger
 from pydantic import BaseModel
 from config import get_llm, get_settings
 from graph.state import BizGPTState
 
+
+logger = get_logger(__name__)
 
 class ReportGeneratorOutput(BaseModel):
     executive_summary: str
@@ -24,7 +27,7 @@ with open("prompts/report_generator.txt", "r") as f:
 
 
 def report_generator(state: BizGPTState):
-    print("entering report generator")
+    logger.info("node_enter", extra={"node": "report_generator"})
     result = llm_struct.invoke(
         f"""
         {prompt}

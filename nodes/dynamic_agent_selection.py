@@ -1,8 +1,11 @@
+from logging_setup import get_logger
 from graph.state import BizGPTState
 from typing import Literal
 from pydantic import BaseModel
 from config import get_llm
 
+
+logger = get_logger(__name__)
 
 class DynamicAgentSelectionOutput(BaseModel):
     selected_agents: list[
@@ -28,7 +31,7 @@ with open("prompts/dynamic_agent_selection.txt", "r") as f:
 
 
 def dynamic_agent_selection(state: BizGPTState):
-    print("dynamic agent")
+    logger.info("node_enter", extra={"node": "dynamic_agent_selection"})
 
     result = struct_llm.invoke(
         f"""

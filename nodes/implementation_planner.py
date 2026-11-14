@@ -1,7 +1,10 @@
+from logging_setup import get_logger
 from pydantic import BaseModel
 from config import get_llm
 from graph.state import BizGPTState
 
+
+logger = get_logger(__name__)
 
 class ImplementationPlannerOutput(BaseModel):
     action_plan: list[str]
@@ -21,7 +24,7 @@ with open("prompts/implementation_planner.txt", "r") as f:
 
 
 def implementation_planner(state: BizGPTState):
-    print("entering implementation planner")
+    logger.info("node_enter", extra={"node": "implementation_planner"})
 
     result = llm_struct.invoke(
         f"""

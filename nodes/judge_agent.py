@@ -1,8 +1,11 @@
+from logging_setup import get_logger
 from pydantic import BaseModel
 from config import get_llm, get_settings
 
 from graph.state import BizGPTState
 
+
+logger = get_logger(__name__)
 
 class JudgeOutput(BaseModel):
     evidence_coverage: str
@@ -20,7 +23,7 @@ with open("prompts/judge_agent.txt", "r") as f:
 
 
 def judge_agent(state: BizGPTState):
-    print("entering judge agent")
+    logger.info("node_enter", extra={"node": "judge_agent"})
     result = llm_struct.invoke(
         f"""
         {prompt}

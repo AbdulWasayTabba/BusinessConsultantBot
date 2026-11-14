@@ -28,6 +28,9 @@ class Settings(BaseSettings):
     # Ollama server URL; None lets langchain-ollama use its default.
     ollama_base_url: Optional[str] = None
     temperature: Optional[float] = None
+    # Logging: level name and whether to emit JSON lines.
+    log_level: str = "INFO"
+    log_json: bool = False
 
 
 @lru_cache

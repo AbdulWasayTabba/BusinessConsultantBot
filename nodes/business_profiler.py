@@ -1,6 +1,9 @@
+from logging_setup import get_logger
 from graph.state import BizGPTState
 from pydantic import BaseModel
 from config import get_llm
+
+logger = get_logger(__name__)
 
 class BusinessProfilerOutput(BaseModel):
     industry: str
@@ -20,7 +23,7 @@ with open("prompts/business_profiler.txt","r") as f:
     prompt = f.read()
 
 def business_profiler(state:BizGPTState):
-    print("entering business profiler")
+    logger.info("node_enter", extra={"node": "business_profiler"})
     result = llm_struct.invoke(f"{prompt} \n user input : {state['user_input']}")
 
     return {"business_profile": result.model_dump()

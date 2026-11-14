@@ -1,6 +1,9 @@
+from logging_setup import get_logger
 from pydantic import BaseModel
 from config import get_llm, get_settings
 from graph.state import BizGPTState
+
+logger = get_logger(__name__)
 
 class ConsultantAgentOutput(BaseModel):
     analyze_SI: str
@@ -16,7 +19,7 @@ with open("prompts/consultant_agent.txt", "r") as f:
     prompt = f.read()
 
 def consultant_agent(state: BizGPTState):
-    print("entering consulatant agent")
+    logger.info("node_enter", extra={"node": "consultant_agent"})
     result = llm_struct.invoke(f"""
         {prompt} 
         
