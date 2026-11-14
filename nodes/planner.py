@@ -1,7 +1,10 @@
+from logging_setup import get_logger
 from graph.state import BizGPTState
 
 from pydantic import BaseModel
 from config import get_llm, get_settings
+
+logger = get_logger(__name__)
 
 class PlannerOutput(BaseModel):
     research_tasks: list[str]
@@ -15,7 +18,7 @@ with open("prompts/planner.txt","r") as f:
     prompt = f.read()
 
 def planner(state: BizGPTState):
-    print("entering planner.py")
+    logger.info("node_enter", extra={"node": "planner"})
 
     result = struct_llm.invoke(
         f"""

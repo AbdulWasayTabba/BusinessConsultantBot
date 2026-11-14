@@ -1,7 +1,10 @@
+from logging_setup import get_logger
 from graph.state import BizGPTState
 from typing import Literal
 from pydantic import BaseModel
 from config import get_llm
+
+logger = get_logger(__name__)
 
 class ProblemClassifierOutput(BaseModel):
     problem_categories: list[
@@ -27,7 +30,7 @@ with open("prompts/problem_classifier.txt","r") as f:
 
 def problem_classifier(state: BizGPTState):
 
-    print("entering problem classifier")
+    logger.info("node_enter", extra={"node": "problem_classifier"})
 
     result = struct_llm.invoke(
         f"""

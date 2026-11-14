@@ -1,7 +1,10 @@
+from logging_setup import get_logger
 from pydantic import BaseModel
 from config import get_llm
 from graph.state import BizGPTState
 
+
+logger = get_logger(__name__)
 
 class ReplanningOutput(BaseModel):
     updated_research_plan: list[str]
@@ -20,7 +23,7 @@ with open("prompts/replanning_agent.txt", "r") as f:
 
 
 def replanning_agent(state: BizGPTState):
-    print("entering replanning agent")
+    logger.info("node_enter", extra={"node": "replanning_agent"})
     result = llm_struct.invoke(
         f"""
         {prompt}

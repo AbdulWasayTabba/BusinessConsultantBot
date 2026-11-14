@@ -1,7 +1,10 @@
+from logging_setup import get_logger
 from pydantic import BaseModel
 from config import get_llm
 from graph.state import BizGPTState
 
+
+logger = get_logger(__name__)
 
 class RecommendationPrioritizerOutput(BaseModel):
     high_priority_actions: list[str]
@@ -22,7 +25,7 @@ with open("prompts/recommendation_prioritizer.txt", "r") as f:
 
 def recommendation_prioritizer(state: BizGPTState):
 
-    print("entering recommendation priotizer")
+    logger.info("node_enter", extra={"node": "recommendation_prioritizer"})
 
     result = llm_struct.invoke(
         f"""

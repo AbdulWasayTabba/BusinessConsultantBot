@@ -1,7 +1,10 @@
+from logging_setup import get_logger
 from pydantic import BaseModel
 from config import get_llm, get_settings
 
 from graph.state import BizGPTState
+
+logger = get_logger(__name__)
 
 llm = get_llm(get_settings().consultant_model)
 
@@ -18,7 +21,7 @@ with open("prompts/research_synthesizer.txt","r") as f:
     prompt = f.read()
 
 def research_synthesizer(state: BizGPTState):
-    print("entering research synthesizer")
+    logger.info("node_enter", extra={"node": "research_synthesizer"})
     # Create a string to hold all the collected research
     combined_research = ""
     

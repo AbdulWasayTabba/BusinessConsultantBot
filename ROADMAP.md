@@ -5,7 +5,7 @@
 - [x] Add .env.example listing required env vars (names only, no values)
 - [x] Write a professional README (overview, architecture with bizgpt_graph.png, setup, usage, env vars)
 - [x] Add centralized config module (pydantic-settings) replacing scattered os.getenv
-- [ ] Add structured logging
+- [x] Add structured logging
 - [ ] Add error handling + retries around LLM calls
 - [ ] Add pytest setup and first unit tests for state/graph wiring (mock LLM)
 - [ ] Add ruff config + pre-commit
@@ -31,3 +31,4 @@
 - 2026-11-11: Added .env.example (LangSmith + Ollama vars, names only).
 - 2026-11-14: docs: add professional README (overview, architecture, setup, usage, env vars)
 - 2026-11-14: Added `config.py` (pydantic-settings, `BIZGPT_` env prefix) with `get_llm()`; all agents/nodes now take model names and Ollama URL from config instead of hardcoded `ChatOllama(...)`.
+- 2026-11-14: Added `logging_setup.py` (stdlib logging, optional JSON lines via `BIZGPT_LOG_JSON`, level via `BIZGPT_LOG_LEVEL`); replaced node `print` calls with structured `node_enter` log events. Note: local .venv base interpreter is missing, so only syntax/formatter checks were run.

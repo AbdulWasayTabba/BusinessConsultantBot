@@ -1,8 +1,11 @@
+from logging_setup import get_logger
 from config import get_llm
 from pydantic import BaseModel
 
 from graph.state import BizGPTState
 
+
+logger = get_logger(__name__)
 
 class TargetedResearchOutput(BaseModel):
     new_findings: list[str]
@@ -21,7 +24,7 @@ with open("prompts/targeted_research.txt", "r") as f:
 
 
 def targeted_research(state: BizGPTState):
-    print("entering targeted research")
+    logger.info("node_enter", extra={"node": "targeted_research"})
 
     result = llm_struct.invoke(
         f"""

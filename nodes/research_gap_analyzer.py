@@ -1,7 +1,10 @@
+from logging_setup import get_logger
 from pydantic import BaseModel
 from config import get_llm, get_settings
 from graph.state import BizGPTState
 
+
+logger = get_logger(__name__)
 
 class ResearchGapAnalyzerOutput(BaseModel):
     whats_missing: list[str]
@@ -21,7 +24,7 @@ with open("prompts/research_gap_analyzer.txt", "r") as f:
 
 
 def research_gap_analyzer(state: BizGPTState):
-    print("entering research gap analyzer")
+    logger.info("node_enter", extra={"node": "research_gap_analyzer"})
 
     result = llm_struct.invoke(
         f"""
