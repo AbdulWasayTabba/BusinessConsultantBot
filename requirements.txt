@@ -21,3 +21,4 @@ tavily-python==0.7.27
 
 # Config
 pydantic-settings>=2.6,<3
+pytest==8.3.4
