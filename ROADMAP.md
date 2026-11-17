@@ -8,7 +8,7 @@
 - [x] Add structured logging
 - [x] Add error handling + retries around LLM calls
 - [x] Add pytest setup and first unit tests for state/graph wiring (mock LLM)
-- [ ] Add ruff config + pre-commit
+- [x] Add ruff config + pre-commit
 - [ ] Add GitHub Actions CI (ruff + pytest)
 - [ ] Add FastAPI REST API exposing the consultant graph (/health, /consult)
 - [ ] Add Dockerfile + .dockerignore
@@ -34,3 +34,4 @@
 - 2026-11-14: Added `logging_setup.py` (stdlib logging, optional JSON lines via `BIZGPT_LOG_JSON`, level via `BIZGPT_LOG_LEVEL`); replaced node `print` calls with structured `node_enter` log events. Note: local .venv base interpreter is missing, so only syntax/formatter checks were run.
 - 2026-11-15: Added `ResilientChatOllama` in `config.py`: `get_llm()` now retries failed LLM calls with exponential backoff and retries structured-output parse/validation failures (`BIZGPT_LLM_MAX_ATTEMPTS`, `BIZGPT_LLM_RETRY_BACKOFF`), logging `llm_call_retry`/`llm_call_failed` events.
 - 2026-11-16: test: add pytest setup (pytest.ini, conftest) and offline tests for state contract + graph routers (graph tests skip if langgraph missing; local .venv points to a missing Python 3.11 and needs recreating).
+- 2026-11-17: chore: add `ruff.toml` (E/F/I/B/UP, py311, line 100), `.pre-commit-config.yaml` (ruff + ruff-format + hygiene hooks incl. detect-private-key) and `requirements-dev.txt`. Ruff not installed locally, so no lint pass run yet; CI item will surface any existing violations.

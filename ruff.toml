@@ -1,0 +1,17 @@
+# Ruff lint + format config (https://docs.astral.sh/ruff/)
+target-version = "py311"
+line-length = 100
+extend-exclude = [".venv", "__pycache__", "test.py"]
+
+[lint]
+# pycodestyle errors, pyflakes, isort, bugbear, pyupgrade
+select = ["E", "F", "I", "B", "UP"]
+# Long prompt strings are common in this codebase; let the formatter handle wrapping.
+ignore = ["E501"]
+
+[lint.per-file-ignores]
+"__init__.py" = ["F401"]
+"tests/**" = ["B011"]
+
+[format]
+quote-style = "double"
