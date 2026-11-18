@@ -9,7 +9,8 @@
 - [x] Add error handling + retries around LLM calls
 - [x] Add pytest setup and first unit tests for state/graph wiring (mock LLM)
 - [x] Add ruff config + pre-commit
-- [ ] Add GitHub Actions CI (ruff + pytest)
+- [x] Add GitHub Actions CI (ruff + pytest)
+- [ ] Make ruff lint job blocking in CI (fix existing violations, drop `continue-on-error`)
 - [ ] Add FastAPI REST API exposing the consultant graph (/health, /consult)
 - [ ] Add Dockerfile + .dockerignore
 - [ ] Add docker-compose.yml
@@ -35,3 +36,4 @@
 - 2026-11-15: Added `ResilientChatOllama` in `config.py`: `get_llm()` now retries failed LLM calls with exponential backoff and retries structured-output parse/validation failures (`BIZGPT_LLM_MAX_ATTEMPTS`, `BIZGPT_LLM_RETRY_BACKOFF`), logging `llm_call_retry`/`llm_call_failed` events.
 - 2026-11-16: test: add pytest setup (pytest.ini, conftest) and offline tests for state contract + graph routers (graph tests skip if langgraph missing; local .venv points to a missing Python 3.11 and needs recreating).
 - 2026-11-17: chore: add `ruff.toml` (E/F/I/B/UP, py311, line 100), `.pre-commit-config.yaml` (ruff + ruff-format + hygiene hooks incl. detect-private-key) and `requirements-dev.txt`. Ruff not installed locally, so no lint pass run yet; CI item will surface any existing violations.
+- 2026-11-18: ci: add GitHub Actions workflow `.github/workflows/ci.yml` (ruff lint + format check, pytest on Python 3.11 with pip cache). Lint job is non-blocking for now since ruff has never been run on the codebase; follow-up item added. Not verified locally (no working venv) - first run on GitHub is the check.
