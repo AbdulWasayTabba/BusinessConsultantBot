@@ -1,4 +1,5 @@
 """Shared pytest setup: make the repo root importable and keep tests offline."""
+
 import os
 import sys
 

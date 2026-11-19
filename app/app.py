@@ -1,5 +1,6 @@
-import uuid
+# ruff: noqa: E402  (imports follow sys.path setup)
 import sys
+import uuid
 from pathlib import Path
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
@@ -83,16 +84,13 @@ if "clarification_question" not in st.session_state:
 # LANGGRAPH CONFIG
 # ==========================================================
 
-config = {
-    "configurable": {
-        "thread_id": st.session_state.thread_id
-    }
-}
+config = {"configurable": {"thread_id": st.session_state.thread_id}}
 
 
 # ==========================================================
 # INTERRUPT HELPERS
 # ==========================================================
+
 
 def extract_interrupt(update):
     """
@@ -110,8 +108,7 @@ def extract_interrupt(update):
     if not interrupt_data:
         return None
 
-    if isinstance(interrupt_data, (list, tuple)):
-
+    if isinstance(interrupt_data, list | tuple):
         if len(interrupt_data) == 0:
             return None
 
@@ -129,14 +126,9 @@ def get_interrupt_question(interrupt):
     if interrupt is None:
         return None
 
-    value = getattr(
-        interrupt,
-        "value",
-        interrupt
-    )
+    value = getattr(interrupt, "value", interrupt)
 
     if isinstance(value, dict):
-
         question = value.get("question")
 
         if question:
@@ -152,6 +144,7 @@ def get_interrupt_question(interrupt):
 # FALLBACK: CHECK CURRENT GRAPH STATE
 # ==========================================================
 
+
 def get_pending_interrupt(config):
     """
     Fallback check in case the interrupt was not captured
@@ -159,7 +152,6 @@ def get_pending_interrupt(config):
     """
 
     try:
-
         snapshot = workflow.get_state(config)
 
         if snapshot is None:
@@ -169,15 +161,12 @@ def get_pending_interrupt(config):
             return None
 
         for task in snapshot.tasks:
-
             if not task.interrupts:
                 continue
 
             interrupt = task.interrupts[0]
 
-            question = get_interrupt_question(
-                interrupt
-            )
+            question = get_interrupt_question(interrupt)
 
             if question:
                 return question
@@ -191,6 +180,7 @@ def get_pending_interrupt(config):
 # ==========================================================
 # DISPLAY INTERRUPT
 # ==========================================================
+
 
 def handle_clarification(question, response_placeholder):
     """
@@ -208,12 +198,7 @@ def handle_clarification(question, response_placeholder):
 
     response_placeholder.markdown(message)
 
-    st.session_state.messages.append(
-        {
-            "role": "assistant",
-            "content": message
-        }
-    )
+    st.session_state.messages.append({"role": "assistant", "content": message})
 
     return True
 
@@ -223,18 +208,12 @@ def handle_clarification(question, response_placeholder):
 # ==========================================================
 
 with st.sidebar:
-
     st.header("Session")
 
-    st.code(
-        st.session_state.thread_id
-    )
+    st.code(st.session_state.thread_id)
 
     if st.button("🔄 New Session"):
-
-        st.session_state.thread_id = str(
-            uuid.uuid4()
-        )
+        st.session_state.thread_id = str(uuid.uuid4())
 
         st.session_state.messages = []
 
@@ -250,12 +229,8 @@ with st.sidebar:
 # ==========================================================
 
 for msg in st.session_state.messages:
-
     with st.chat_message(msg["role"]):
-
-        st.markdown(
-            msg["content"]
-        )
+        st.markdown(msg["content"])
 
 
 # ==========================================================
@@ -263,35 +238,23 @@ for msg in st.session_state.messages:
 # ==========================================================
 
 if not st.session_state.waiting_for_clarification:
-
-    prompt = st.chat_input(
-        "Describe your business problem..."
-    )
+    prompt = st.chat_input("Describe your business problem...")
 
     if prompt:
-
         # --------------------------------------------------
         # SAVE USER MESSAGE
         # --------------------------------------------------
 
-        st.session_state.messages.append(
-            {
-                "role": "user",
-                "content": prompt
-            }
-        )
+        st.session_state.messages.append({"role": "user", "content": prompt})
 
         with st.chat_message("user"):
-
             st.markdown(prompt)
-
 
         # --------------------------------------------------
         # ASSISTANT
         # --------------------------------------------------
 
         with st.chat_message("assistant"):
-
             progress_placeholder = st.empty()
 
             response_placeholder = st.empty()
@@ -300,9 +263,7 @@ if not st.session_state.waiting_for_clarification:
 
             interrupt_question = None
 
-
             try:
-
                 # ==================================================
                 # START GRAPH
                 # ==================================================
@@ -314,7 +275,6 @@ if not st.session_state.waiting_for_clarification:
                     "clarification_attempts": 0,
                 }
 
-
                 # ==================================================
                 # IMPORTANT:
                 #
@@ -325,31 +285,18 @@ if not st.session_state.waiting_for_clarification:
                 # to finish naturally.
                 # ==================================================
 
-                for update in workflow.stream(
-                    initial_state,
-                    config=config,
-                    stream_mode="updates"
-                ):
-
+                for update in workflow.stream(initial_state, config=config, stream_mode="updates"):
                     if not update:
                         continue
-
 
                     # --------------------------------------------------
                     # CHECK INTERRUPT
                     # --------------------------------------------------
 
-                    interrupt = extract_interrupt(
-                        update
-                    )
+                    interrupt = extract_interrupt(update)
 
                     if interrupt is not None:
-
-                        interrupt_question = (
-                            get_interrupt_question(
-                                interrupt
-                            )
-                        )
+                        interrupt_question = get_interrupt_question(interrupt)
 
                         # IMPORTANT:
                         # Do NOT use break here.
@@ -357,7 +304,6 @@ if not st.session_state.waiting_for_clarification:
                         # Let LangGraph's generator close naturally.
                         #
                         continue
-
 
                     # --------------------------------------------------
                     # NORMAL NODE UPDATE
@@ -373,63 +319,38 @@ if not st.session_state.waiting_for_clarification:
 
                     node_name = keys[0]
 
-
                     # Ignore internal LangGraph keys.
 
                     if node_name.startswith("__"):
                         continue
 
-
-                    friendly_name = DISPLAY_NAMES.get(
-                        node_name,
-                        node_name
-                    )
-
+                    friendly_name = DISPLAY_NAMES.get(node_name, node_name)
 
                     if friendly_name not in completed_steps:
-
-                        completed_steps.append(
-                            friendly_name
-                        )
-
+                        completed_steps.append(friendly_name)
 
                     progress_placeholder.markdown(
-                        "\n".join(
-                            f"✅ {step}"
-                            for step in completed_steps
-                        )
+                        "\n".join(f"✅ {step}" for step in completed_steps)
                     )
-
 
                 # ==================================================
                 # FALLBACK INTERRUPT CHECK
                 # ==================================================
 
                 if not interrupt_question:
-
-                    interrupt_question = (
-                        get_pending_interrupt(
-                            config
-                        )
-                    )
-
+                    interrupt_question = get_pending_interrupt(config)
 
                 # ==================================================
                 # INTERRUPT FOUND
                 # ==================================================
 
                 if interrupt_question:
-
-                    handle_clarification(
-                        interrupt_question,
-                        response_placeholder
-                    )
+                    handle_clarification(interrupt_question, response_placeholder)
 
                     # Rerun ONLY after the stream has completely
                     # finished processing.
 
                     st.rerun()
-
 
                 # ==================================================
                 # GRAPH COMPLETED
@@ -439,27 +360,18 @@ if not st.session_state.waiting_for_clarification:
 
                 st.session_state.clarification_question = ""
 
-
                 # --------------------------------------------------
                 # GET FINAL STATE
                 # --------------------------------------------------
 
-                snapshot = workflow.get_state(
-                    config
-                )
-
+                snapshot = workflow.get_state(config)
 
                 if snapshot is None:
-
-                    response_placeholder.error(
-                        "Unable to retrieve the final graph state."
-                    )
+                    response_placeholder.error("Unable to retrieve the final graph state.")
 
                     st.stop()
 
-
                 result = snapshot.values or {}
-
 
                 # --------------------------------------------------
                 # FINAL RESPONSE
@@ -472,75 +384,41 @@ if not st.session_state.waiting_for_clarification:
                     or "No report generated."
                 )
 
-
                 progress_placeholder.empty()
 
-
-                if isinstance(
-                    response,
-                    dict
-                ):
-
-                    response_placeholder.json(
-                        response
-                    )
+                if isinstance(response, dict):
+                    response_placeholder.json(response)
 
                 else:
-
-                    response_placeholder.markdown(
-                        str(response)
-                    )
-
+                    response_placeholder.markdown(str(response))
 
                 # --------------------------------------------------
                 # SAVE ASSISTANT RESPONSE
                 # --------------------------------------------------
 
-                st.session_state.messages.append(
-                    {
-                        "role": "assistant",
-                        "content": str(response)
-                    }
-                )
-
+                st.session_state.messages.append({"role": "assistant", "content": str(response)})
 
             except GeneratorExit:
-
                 # GeneratorExit should normally not happen because
                 # we no longer break out of workflow.stream().
                 #
                 # If it does happen, check whether a pending
                 # interrupt exists before treating it as an error.
 
-                interrupt_question = (
-                    get_pending_interrupt(
-                        config
-                    )
-                )
-
+                interrupt_question = get_pending_interrupt(config)
 
                 if interrupt_question:
-
-                    handle_clarification(
-                        interrupt_question,
-                        response_placeholder
-                    )
+                    handle_clarification(interrupt_question, response_placeholder)
 
                     st.rerun()
 
                 else:
-
                     st.warning(
-                        "The graph stream was closed before "
-                        "a final response was produced."
+                        "The graph stream was closed before " "a final response was produced."
                     )
 
-
             except Exception as e:
-
-                st.error(
-                    f"Error: {type(e).__name__}: {str(e)}"
-                )
+                st.error(f"Error: {type(e).__name__}: {str(e)}")
 
 
 # ==========================================================
@@ -548,39 +426,23 @@ if not st.session_state.waiting_for_clarification:
 # ==========================================================
 
 else:
-
-    clarification = st.chat_input(
-        st.session_state.clarification_question
-    )
-
+    clarification = st.chat_input(st.session_state.clarification_question)
 
     if clarification:
-
         # --------------------------------------------------
         # SAVE USER CLARIFICATION
         # --------------------------------------------------
 
-        st.session_state.messages.append(
-            {
-                "role": "user",
-                "content": clarification
-            }
-        )
-
+        st.session_state.messages.append({"role": "user", "content": clarification})
 
         with st.chat_message("user"):
-
-            st.markdown(
-                clarification
-            )
-
+            st.markdown(clarification)
 
         # --------------------------------------------------
         # ASSISTANT
         # --------------------------------------------------
 
         with st.chat_message("assistant"):
-
             progress_placeholder = st.empty()
 
             response_placeholder = st.empty()
@@ -589,17 +451,12 @@ else:
 
             interrupt_question = None
 
-
             try:
-
                 # ==================================================
                 # RESUME GRAPH
                 # ==================================================
 
-                resume_command = Command(
-                    resume=clarification
-                )
-
+                resume_command = Command(resume=clarification)
 
                 # ==================================================
                 # IMPORTANT:
@@ -608,31 +465,18 @@ else:
                 # IS FOUND.
                 # ==================================================
 
-                for update in workflow.stream(
-                    resume_command,
-                    config=config,
-                    stream_mode="updates"
-                ):
-
+                for update in workflow.stream(resume_command, config=config, stream_mode="updates"):
                     if not update:
                         continue
-
 
                     # --------------------------------------------------
                     # CHECK INTERRUPT
                     # --------------------------------------------------
 
-                    interrupt = extract_interrupt(
-                        update
-                    )
+                    interrupt = extract_interrupt(update)
 
                     if interrupt is not None:
-
-                        interrupt_question = (
-                            get_interrupt_question(
-                                interrupt
-                            )
-                        )
+                        interrupt_question = get_interrupt_question(interrupt)
 
                         # IMPORTANT:
                         # No break.
@@ -640,7 +484,6 @@ else:
                         # Allow workflow.stream() to finish naturally.
 
                         continue
-
 
                     # --------------------------------------------------
                     # NORMAL NODE UPDATE
@@ -656,62 +499,37 @@ else:
 
                     node_name = keys[0]
 
-
                     if node_name.startswith("__"):
                         continue
 
-
-                    friendly_name = DISPLAY_NAMES.get(
-                        node_name,
-                        node_name
-                    )
-
+                    friendly_name = DISPLAY_NAMES.get(node_name, node_name)
 
                     if friendly_name not in completed_steps:
-
-                        completed_steps.append(
-                            friendly_name
-                        )
-
+                        completed_steps.append(friendly_name)
 
                     progress_placeholder.markdown(
-                        "\n".join(
-                            f"✅ {step}"
-                            for step in completed_steps
-                        )
+                        "\n".join(f"✅ {step}" for step in completed_steps)
                     )
-
 
                 # ==================================================
                 # FALLBACK INTERRUPT CHECK
                 # ==================================================
 
                 if not interrupt_question:
-
-                    interrupt_question = (
-                        get_pending_interrupt(
-                            config
-                        )
-                    )
-
+                    interrupt_question = get_pending_interrupt(config)
 
                 # ==================================================
                 # ANOTHER CLARIFICATION IS REQUIRED
                 # ==================================================
 
                 if interrupt_question:
-
-                    handle_clarification(
-                        interrupt_question,
-                        response_placeholder
-                    )
+                    handle_clarification(interrupt_question, response_placeholder)
 
                     # Keep clarification mode active.
 
                     st.session_state.waiting_for_clarification = True
 
                     st.rerun()
-
 
                 # ==================================================
                 # NO INTERRUPT
@@ -741,27 +559,18 @@ else:
 
                 st.session_state.clarification_question = ""
 
-
                 # --------------------------------------------------
                 # GET FINAL STATE
                 # --------------------------------------------------
 
-                snapshot = workflow.get_state(
-                    config
-                )
-
+                snapshot = workflow.get_state(config)
 
                 if snapshot is None:
-
-                    response_placeholder.error(
-                        "Unable to retrieve the graph state."
-                    )
+                    response_placeholder.error("Unable to retrieve the graph state.")
 
                     st.stop()
 
-
                 result = snapshot.values or {}
-
 
                 # --------------------------------------------------
                 # FINAL RESPONSE
@@ -774,72 +583,38 @@ else:
                     or "No report generated."
                 )
 
-
                 progress_placeholder.empty()
 
-
-                if isinstance(
-                    response,
-                    dict
-                ):
-
-                    response_placeholder.json(
-                        response
-                    )
+                if isinstance(response, dict):
+                    response_placeholder.json(response)
 
                 else:
-
-                    response_placeholder.markdown(
-                        str(response)
-                    )
-
+                    response_placeholder.markdown(str(response))
 
                 # --------------------------------------------------
                 # SAVE FINAL RESPONSE
                 # --------------------------------------------------
 
-                st.session_state.messages.append(
-                    {
-                        "role": "assistant",
-                        "content": str(response)
-                    }
-                )
-
+                st.session_state.messages.append({"role": "assistant", "content": str(response)})
 
             except GeneratorExit:
-
                 # Check whether the graph actually paused at another
                 # clarification interrupt.
 
-                interrupt_question = (
-                    get_pending_interrupt(
-                        config
-                    )
-                )
-
+                interrupt_question = get_pending_interrupt(config)
 
                 if interrupt_question:
-
-                    handle_clarification(
-                        interrupt_question,
-                        response_placeholder
-                    )
+                    handle_clarification(interrupt_question, response_placeholder)
 
                     st.rerun()
 
                 else:
-
                     st.warning(
-                        "The graph stream was closed before "
-                        "a final response was produced."
+                        "The graph stream was closed before " "a final response was produced."
                     )
 
-
             except Exception as e:
-
-                st.error(
-                    f"Error: {type(e).__name__}: {str(e)}"
-                )
+                st.error(f"Error: {type(e).__name__}: {str(e)}")
 
 
 # ==========================================================
@@ -847,63 +622,35 @@ else:
 # ==========================================================
 
 try:
-
-    snapshot = workflow.get_state(
-        config
-    )
-
+    snapshot = workflow.get_state(config)
 
     with st.expander("Debug State"):
-
         if snapshot:
-
-            st.json(
-                snapshot.values
-            )
+            st.json(snapshot.values)
 
             # ----------------------------------------------
             # SHOW CURRENT GRAPH NEXT NODES
             # ----------------------------------------------
 
             if snapshot.next:
-
-                st.write(
-                    "Next nodes:",
-                    list(snapshot.next)
-                )
+                st.write("Next nodes:", list(snapshot.next))
 
             # ----------------------------------------------
             # SHOW PENDING INTERRUPTS
             # ----------------------------------------------
 
             if snapshot.tasks:
-
                 pending_interrupts = []
 
                 for task in snapshot.tasks:
-
                     if task.interrupts:
-
                         for interrupt in task.interrupts:
-
-                            pending_interrupts.append(
-                                get_interrupt_question(
-                                    interrupt
-                                )
-                            )
+                            pending_interrupts.append(get_interrupt_question(interrupt))
 
                 if pending_interrupts:
-
-                    st.write(
-                        "Pending interrupts:",
-                        pending_interrupts
-                    )
+                    st.write("Pending interrupts:", pending_interrupts)
 
 
 except Exception as e:
-
     with st.expander("Debug State"):
-
-        st.write(
-            f"Debug state unavailable: {type(e).__name__}: {str(e)}"
-        )
+        st.write(f"Debug state unavailable: {type(e).__name__}: {str(e)}")

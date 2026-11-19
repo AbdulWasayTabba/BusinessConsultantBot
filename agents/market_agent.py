@@ -1,6 +1,8 @@
-from graph.state import BizGPTState
-from config import get_llm
 from pydantic import BaseModel
+
+from config import get_llm
+from graph.state import BizGPTState
+
 
 class MarketOutput(BaseModel):
     industry_trends: list[str]
@@ -8,11 +10,13 @@ class MarketOutput(BaseModel):
     customer_behavior: str
     demand_shifts: str
 
+
 llm = get_llm()
 struct_llm = llm.with_structured_output(MarketOutput)
 
-with open("prompts/market_agent.txt", "r") as f:
+with open("prompts/market_agent.txt") as f:
     prompt_text = f.read()
+
 
 def market_agent(state: BizGPTState):
     result = struct_llm.invoke(
@@ -27,9 +31,4 @@ def market_agent(state: BizGPTState):
         """
     )
 
-    return {
-        "research_findings": [{
-            "agent": "market",
-            "findings": result.model_dump()
-        }]
-    }
+    return {"research_findings": [{"agent": "market", "findings": result.model_dump()}]}

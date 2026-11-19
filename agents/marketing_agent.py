@@ -1,6 +1,8 @@
-from graph.state import BizGPTState
-from config import get_llm
 from pydantic import BaseModel
+
+from config import get_llm
+from graph.state import BizGPTState
+
 
 class MarketingOutput(BaseModel):
     seo_landscape: str
@@ -8,11 +10,13 @@ class MarketingOutput(BaseModel):
     advertising_strategy: str
     customer_acquisition: str
 
+
 llm = get_llm()
 struct_llm = llm.with_structured_output(MarketingOutput)
 
-with open("prompts/marketing_agent.txt", "r") as f:
+with open("prompts/marketing_agent.txt") as f:
     prompt = f.read()
+
 
 def marketing_agent(state: BizGPTState):
     result = struct_llm.invoke(
@@ -26,10 +30,5 @@ def marketing_agent(state: BizGPTState):
         {state['business_profile']}
         """
     )
-    
-    return {
-        "research_findings": [{
-            "agent": "marketing",
-            "findings": result.model_dump()
-        }]
-    }
+
+    return {"research_findings": [{"agent": "marketing", "findings": result.model_dump()}]}

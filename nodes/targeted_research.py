@@ -1,11 +1,11 @@
-from logging_setup import get_logger
-from config import get_llm
 from pydantic import BaseModel
 
+from config import get_llm
 from graph.state import BizGPTState
-
+from logging_setup import get_logger
 
 logger = get_logger(__name__)
+
 
 class TargetedResearchOutput(BaseModel):
     new_findings: list[str]
@@ -14,12 +14,10 @@ class TargetedResearchOutput(BaseModel):
 
 llm = get_llm(temperature=0)
 
-llm_struct = llm.with_structured_output(
-    TargetedResearchOutput
-)
+llm_struct = llm.with_structured_output(TargetedResearchOutput)
 
 
-with open("prompts/targeted_research.txt", "r") as f:
+with open("prompts/targeted_research.txt") as f:
     prompt = f.read()
 
 
@@ -49,7 +47,7 @@ def targeted_research(state: BizGPTState):
             {
                 "agent": "targeted_research",
                 "findings": result.new_findings,
-                "evidence_added": result.evidence_added
+                "evidence_added": result.evidence_added,
             }
         ]
     }

@@ -1,4 +1,5 @@
 """Graph wiring + router logic. Pure functions only: no LLM is ever invoked."""
+
 import pytest
 
 pytest.importorskip("langgraph")
@@ -35,6 +36,12 @@ def test_judge_router_replans_once_then_continues():
 
 
 def test_missing_info_router_caps_attempts():
-    assert g.missing_info_router({"missing_fields": ["industry"], "clarification_attempts": 0}) == "need_more_info"
-    assert g.missing_info_router({"missing_fields": ["industry"], "clarification_attempts": 3}) == "continue"
+    assert (
+        g.missing_info_router({"missing_fields": ["industry"], "clarification_attempts": 0})
+        == "need_more_info"
+    )
+    assert (
+        g.missing_info_router({"missing_fields": ["industry"], "clarification_attempts": 3})
+        == "continue"
+    )
     assert g.missing_info_router({"missing_fields": []}) == "continue"

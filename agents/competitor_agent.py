@@ -1,6 +1,8 @@
-from graph.state import BizGPTState
-from config import get_llm
 from pydantic import BaseModel
+
+from config import get_llm
+from graph.state import BizGPTState
+
 
 class CompetitorOutput(BaseModel):
     competitor_landscape: str
@@ -8,11 +10,13 @@ class CompetitorOutput(BaseModel):
     positioning: str
     strengths_and_weaknesses: list[str]
 
+
 llm = get_llm()
 struct_llm = llm.with_structured_output(CompetitorOutput)
 
-with open("prompts/competitor_agent.txt", "r") as f:
+with open("prompts/competitor_agent.txt") as f:
     prompt = f.read()
+
 
 def competitor_agent(state: BizGPTState):
     # Actually invoke the LLM with the prompt and state variables
@@ -27,11 +31,6 @@ def competitor_agent(state: BizGPTState):
         {state['business_profile']}
         """
     )
-    
+
     # Return a dict targeting the state key, wrapping the output in a list
-    return {
-        "research_findings": [{
-            "agent": "competitor",
-            "findings": result.model_dump()
-        }]
-    }
+    return {"research_findings": [{"agent": "competitor", "findings": result.model_dump()}]}

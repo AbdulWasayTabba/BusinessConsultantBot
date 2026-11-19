@@ -9,7 +9,7 @@ controlled by ``BIZGPT_LOG_LEVEL`` (default ``INFO``).
 import json
 import logging
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 _RESERVED = set(vars(logging.makeLogRecord({}))) | {"message", "asctime"}
 _configured = False
@@ -18,7 +18,7 @@ _configured = False
 class JsonFormatter(logging.Formatter):
     def format(self, record: logging.LogRecord) -> str:
         payload = {
-            "ts": datetime.fromtimestamp(record.created, timezone.utc).isoformat(),
+            "ts": datetime.fromtimestamp(record.created, UTC).isoformat(),
             "level": record.levelname,
             "logger": record.name,
             "msg": record.getMessage(),

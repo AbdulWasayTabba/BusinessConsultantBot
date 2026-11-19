@@ -1,10 +1,11 @@
-from logging_setup import get_logger
 from pydantic import BaseModel
+
 from config import get_llm
 from graph.state import BizGPTState
-
+from logging_setup import get_logger
 
 logger = get_logger(__name__)
+
 
 class ImplementationPlannerOutput(BaseModel):
     action_plan: list[str]
@@ -15,11 +16,9 @@ class ImplementationPlannerOutput(BaseModel):
 
 llm = get_llm()
 
-llm_struct = llm.with_structured_output(
-    ImplementationPlannerOutput
-)
+llm_struct = llm.with_structured_output(ImplementationPlannerOutput)
 
-with open("prompts/implementation_planner.txt", "r") as f:
+with open("prompts/implementation_planner.txt") as f:
     prompt = f.read()
 
 
@@ -38,6 +37,4 @@ def implementation_planner(state: BizGPTState):
         """
     )
 
-    return {
-        "implementation_plan": result.model_dump()
-    }
+    return {"implementation_plan": result.model_dump()}
