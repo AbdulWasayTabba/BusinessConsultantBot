@@ -1,11 +1,13 @@
-from logging_setup import get_logger
-from graph.state import BizGPTState
 from typing import Literal
-from pydantic import BaseModel
-from config import get_llm
 
+from pydantic import BaseModel
+
+from config import get_llm
+from graph.state import BizGPTState
+from logging_setup import get_logger
 
 logger = get_logger(__name__)
+
 
 class DynamicAgentSelectionOutput(BaseModel):
     selected_agents: list[
@@ -15,18 +17,16 @@ class DynamicAgentSelectionOutput(BaseModel):
             "marketing_agent",
             "operations_agent",
             "finance_agent",
-            "customer_agent"
+            "customer_agent",
         ]
     ]
 
 
 llm = get_llm()
 
-struct_llm = llm.with_structured_output(
-    DynamicAgentSelectionOutput
-)
+struct_llm = llm.with_structured_output(DynamicAgentSelectionOutput)
 
-with open("prompts/dynamic_agent_selection.txt", "r") as f:
+with open("prompts/dynamic_agent_selection.txt") as f:
     prompt = f.read()
 
 
@@ -48,6 +48,4 @@ def dynamic_agent_selection(state: BizGPTState):
         """
     )
 
-    return {
-        "selected_agents": result.selected_agents
-    }
+    return {"selected_agents": result.selected_agents}

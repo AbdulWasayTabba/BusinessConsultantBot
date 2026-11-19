@@ -1,4 +1,5 @@
 """BizGPTState contract: keys the graph routers rely on must exist."""
+
 import pytest
 
 pytest.importorskip("typing_extensions")

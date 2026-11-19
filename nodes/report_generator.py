@@ -1,10 +1,11 @@
-from logging_setup import get_logger
 from pydantic import BaseModel
+
 from config import get_llm, get_settings
 from graph.state import BizGPTState
-
+from logging_setup import get_logger
 
 logger = get_logger(__name__)
+
 
 class ReportGeneratorOutput(BaseModel):
     executive_summary: str
@@ -17,12 +18,10 @@ class ReportGeneratorOutput(BaseModel):
 
 llm = get_llm(get_settings().consultant_model, streaming=True)
 
-llm_struct = llm.with_structured_output(
-    ReportGeneratorOutput
-)
+llm_struct = llm.with_structured_output(ReportGeneratorOutput)
 
 
-with open("prompts/report_generator.txt", "r") as f:
+with open("prompts/report_generator.txt") as f:
     prompt = f.read()
 
 
@@ -58,6 +57,4 @@ def report_generator(state: BizGPTState):
         """
     )
 
-    return {
-        "final_report": result.model_dump()
-    }
+    return {"final_report": result.model_dump()}

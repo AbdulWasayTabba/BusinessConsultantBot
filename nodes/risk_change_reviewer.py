@@ -1,10 +1,11 @@
-from logging_setup import get_logger
 from pydantic import BaseModel
+
 from config import get_llm
 from graph.state import BizGPTState
-
+from logging_setup import get_logger
 
 logger = get_logger(__name__)
+
 
 class RiskChangeReviewerOutput(BaseModel):
     implementation_risks: list[str]
@@ -14,12 +15,10 @@ class RiskChangeReviewerOutput(BaseModel):
 
 llm = get_llm()
 
-llm_struct = llm.with_structured_output(
-    RiskChangeReviewerOutput
-)
+llm_struct = llm.with_structured_output(RiskChangeReviewerOutput)
 
 
-with open("prompts/risk_change_reviewer.txt", "r") as f:
+with open("prompts/risk_change_reviewer.txt") as f:
     prompt = f.read()
 
 
@@ -40,6 +39,4 @@ def risk_change_reviewer(state: BizGPTState):
         """
     )
 
-    return {
-        "risk_review": result.model_dump()
-    }
+    return {"risk_review": result.model_dump()}

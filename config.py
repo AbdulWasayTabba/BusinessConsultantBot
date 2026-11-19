@@ -10,10 +10,10 @@ bot can be reconfigured per environment without code changes, e.g.
 import logging
 import time
 from functools import lru_cache
-from typing import Any, Optional
+from typing import Any
 
-from langchain_ollama import ChatOllama
 from langchain_core.exceptions import OutputParserException
+from langchain_ollama import ChatOllama
 from pydantic import ValidationError
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -21,9 +21,7 @@ logger = logging.getLogger(__name__)
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(
-        env_prefix="BIZGPT_", env_file=".env", extra="ignore"
-    )
+    model_config = SettingsConfigDict(env_prefix="BIZGPT_", env_file=".env", extra="ignore")
 
     # Model used by the specialist agents, profiler and chat router.
     agent_model: str = "phi3:mini"
@@ -32,8 +30,8 @@ class Settings(BaseSettings):
     # Small model used by the judge and research-gap analyzer.
     judge_model: str = "llama3.2:3b"
     # Ollama server URL; None lets langchain-ollama use its default.
-    ollama_base_url: Optional[str] = None
-    temperature: Optional[float] = None
+    ollama_base_url: str | None = None
+    temperature: float | None = None
     # Logging: level name and whether to emit JSON lines.
     log_level: str = "INFO"
     log_json: bool = False
@@ -90,7 +88,7 @@ class ResilientChatOllama(ChatOllama):
         )
 
 
-def get_llm(model: Optional[str] = None, **kwargs) -> ChatOllama:
+def get_llm(model: str | None = None, **kwargs) -> ChatOllama:
     """Build a ChatOllama client from settings; kwargs override defaults."""
     s = get_settings()
     params = {"model": model or s.agent_model}

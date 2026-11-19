@@ -1,5 +1,6 @@
-from typing import TypedDict, List, Dict, Any,Annotated,Literal
 from operator import add
+from typing import Annotated, Any, Literal, TypedDict
+
 
 class BizGPTState(TypedDict):
     # User Input
@@ -9,9 +10,9 @@ class BizGPTState(TypedDict):
     route_type: str
 
     # Business Understanding
-    business_profile: Dict[str, Any]
+    business_profile: dict[str, Any]
 
-    #missing info
+    # missing info
     missing_fields: list[str]
     clarification_question: str
 
@@ -19,41 +20,43 @@ class BizGPTState(TypedDict):
     clarification_attempts: int
 
     # Problem Analysis
-    diagnosis: Dict[str, Any]
-    problem_categories: List[str]
+    diagnosis: dict[str, Any]
+    problem_categories: list[str]
     # Planning
-    research_plan: List[str]
-    selected_agents: list[Literal[
-"market_agent",
-"competitor_agent",
-"marketing_agent",
-"operations_agent",
-"finance_agent",
-"customer_agent"
-]]
+    research_plan: list[str]
+    selected_agents: list[
+        Literal[
+            "market_agent",
+            "competitor_agent",
+            "marketing_agent",
+            "operations_agent",
+            "finance_agent",
+            "customer_agent",
+        ]
+    ]
 
     # Research Phase
-    research_findings: Annotated[list[dict[str, Any]],add]
+    research_findings: Annotated[list[dict[str, Any]], add]
 
     # Synthesis Phase
-    synthesized_insights: List[str]
-    research_gaps: Dict[str, List[str]]
+    synthesized_insights: list[str]
+    research_gaps: dict[str, list[str]]
     replan_count: int
 
     # Consulting Phase
-    recommendations: List[str]
+    recommendations: list[str]
 
     # Self Reflection / Judge
-    judge_feedback: Dict[str, Any]
+    judge_feedback: dict[str, Any]
 
     # Prioritization
-    prioritized_actions: List[Dict[str, Any]]
+    prioritized_actions: list[dict[str, Any]]
 
     # Execution Planning
-    implementation_plan: Dict[str, Any]
+    implementation_plan: dict[str, Any]
 
     # Risk Review
-    risk_review: Dict[str, Any]
+    risk_review: dict[str, Any]
 
     # Final Output
-    final_report: Dict[str, Any]
+    final_report: dict[str, Any]

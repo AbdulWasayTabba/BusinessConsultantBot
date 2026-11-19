@@ -16,8 +16,6 @@ jobs:
   lint:
     name: Lint (ruff)
     runs-on: ubuntu-latest
-    # Non-blocking until the first full lint pass is clean (see ROADMAP).
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

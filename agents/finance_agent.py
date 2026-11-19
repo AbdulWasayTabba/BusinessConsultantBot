@@ -1,6 +1,7 @@
-from graph.state import BizGPTState
-from config import get_llm
 from pydantic import BaseModel
+
+from config import get_llm
+from graph.state import BizGPTState
 
 
 class FinanceOutput(BaseModel):
@@ -14,7 +15,7 @@ class FinanceOutput(BaseModel):
 llm = get_llm()
 struct_llm = llm.with_structured_output(FinanceOutput)
 
-with open("prompts/finance_agent.txt", "r") as f:
+with open("prompts/finance_agent.txt") as f:
     prompt_text = f.read()
 
 
@@ -31,11 +32,4 @@ def finance_agent(state: BizGPTState):
         """
     )
 
-    return {
-        "research_findings": [
-            {
-                "agent": "finance",
-                "findings": result.model_dump()
-            }
-        ]
-    }
+    return {"research_findings": [{"agent": "finance", "findings": result.model_dump()}]}
