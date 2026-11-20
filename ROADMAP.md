@@ -11,7 +11,7 @@
 - [x] Add ruff config + pre-commit
 - [x] Add GitHub Actions CI (ruff + pytest)
 - [x] Make ruff lint job blocking in CI (fix existing violations, drop `continue-on-error`)
-- [ ] Add FastAPI REST API exposing the consultant graph (/health, /consult)
+- [x] Add FastAPI REST API exposing the consultant graph (/health, /consult)
 - [ ] Add Dockerfile + .dockerignore
 - [ ] Add docker-compose.yml
 - [ ] Add streaming responses endpoint
@@ -38,3 +38,4 @@
 - 2026-11-17: chore: add `ruff.toml` (E/F/I/B/UP, py311, line 100), `.pre-commit-config.yaml` (ruff + ruff-format + hygiene hooks incl. detect-private-key) and `requirements-dev.txt`. Ruff not installed locally, so no lint pass run yet; CI item will surface any existing violations.
 - 2026-11-18: ci: add GitHub Actions workflow `.github/workflows/ci.yml` (ruff lint + format check, pytest on Python 3.11 with pip cache). Lint job is non-blocking for now since ruff has never been run on the codebase; follow-up item added. Not verified locally (no working venv) - first run on GitHub is the check.
 - 2026-11-19: ruff lint is now blocking in CI — auto-fixed/formatted the codebase, hoisted late imports in graph/graph.py, documented intentional E402 in app/app.py and main.py.
+- 2026-11-20: feat: add FastAPI service `api/main.py` (`GET /health`, `POST /consult` with thread_id-based clarification resume via LangGraph interrupts; graph loaded lazily, failures -> 502) plus offline tests `tests/test_api.py` using a fake workflow. Run: `uvicorn api.main:app`. Tests skip locally (no fastapi in local Python); CI installs it.
