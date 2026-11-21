@@ -12,7 +12,7 @@
 - [x] Add GitHub Actions CI (ruff + pytest)
 - [x] Make ruff lint job blocking in CI (fix existing violations, drop `continue-on-error`)
 - [x] Add FastAPI REST API exposing the consultant graph (/health, /consult)
-- [ ] Add Dockerfile + .dockerignore
+- [x] Add Dockerfile + .dockerignore
 - [ ] Add docker-compose.yml
 - [ ] Add streaming responses endpoint
 - [ ] Add conversation/session persistence (LangGraph checkpointer, SQLite then Postgres-ready)
@@ -39,3 +39,4 @@
 - 2026-11-18: ci: add GitHub Actions workflow `.github/workflows/ci.yml` (ruff lint + format check, pytest on Python 3.11 with pip cache). Lint job is non-blocking for now since ruff has never been run on the codebase; follow-up item added. Not verified locally (no working venv) - first run on GitHub is the check.
 - 2026-11-19: ruff lint is now blocking in CI — auto-fixed/formatted the codebase, hoisted late imports in graph/graph.py, documented intentional E402 in app/app.py and main.py.
 - 2026-11-20: feat: add FastAPI service `api/main.py` (`GET /health`, `POST /consult` with thread_id-based clarification resume via LangGraph interrupts; graph loaded lazily, failures -> 502) plus offline tests `tests/test_api.py` using a fake workflow. Run: `uvicorn api.main:app`. Tests skip locally (no fastapi in local Python); CI installs it.
+- 2026-11-21: chore: add multi-stage `Dockerfile` (python:3.11-slim, venv builder stage, non-root user, HEALTHCHECK on `/health`, runs `uvicorn api.main:app` on :8000) and `.dockerignore` (excludes .env/secrets, VCS, caches, tests). Ollama reached via `BIZGPT_OLLAMA_BASE_URL`. Not built locally (no Docker run in automation).

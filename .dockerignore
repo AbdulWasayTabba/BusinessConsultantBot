@@ -1,0 +1,27 @@
+# Secrets - pass at runtime via --env-file, never bake into the image
+.env
+.env.*
+!.env.example
+
+# VCS / tooling
+.git
+.github
+.gitignore
+.pre-commit-config.yaml
+.ruff_cache
+.pytest_cache
+.mypy_cache
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.log
+
+# Dev-only files
+tests/
+test.py
+requirements-dev.txt
+*.png
+.DS_Store
