@@ -60,6 +60,17 @@ Command line:
 python main.py
 ```
 
+## Docker
+
+```bash
+cp .env.example .env
+docker compose up -d --build
+docker compose exec ollama ollama pull phi3:mini   # also qwen3:8b, llama3.2:3b
+curl http://localhost:8000/health
+```
+
+The compose stack runs the API and an Ollama server; models persist in the `ollama-models` volume.
+
 ## Environment variables
 
 See `.env.example`. All are optional.

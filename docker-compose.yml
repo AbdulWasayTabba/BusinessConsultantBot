@@ -1,0 +1,33 @@
+# BizGPT local stack: API + Ollama model server.
+#   docker compose up -d --build
+#   docker compose exec ollama ollama pull phi3:mini   # repeat for qwen3:8b, llama3.2:3b
+#   curl http://localhost:8000/health
+# Secrets are read from .env at runtime (copy .env.example -> .env); never baked into images.
+
+services:
+  api:
+    build: .
+    image: bizgpt:latest
+    ports:
+      - "8000:8000"
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      BIZGPT_OLLAMA_BASE_URL: http://ollama:11434
+      BIZGPT_LOG_LEVEL: ${BIZGPT_LOG_LEVEL:-INFO}
+    depends_on:
+      ollama:
+        condition: service_started
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-models:/root/.ollama
+    restart: unless-stopped
+
+volumes:
+  ollama-models:
