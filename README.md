@@ -1,5 +1,7 @@
 # BizGPT — Multi-Agent AI Business Consultant
 
+[![CI](https://github.com/AbdulWasayTabba/BusinessConsultantBot/actions/workflows/ci.yml/badge.svg)](https://github.com/AbdulWasayTabba/BusinessConsultantBot/actions/workflows/ci.yml)
+
 BizGPT is a multi-agent "business consultant" built with **LangGraph** and local LLMs served by **Ollama**. Describe your business and a problem; a graph of specialised agents profiles the business, asks clarifying questions, researches market, competitor, customer, finance, marketing and operations angles, then produces a prioritised, reviewed action plan and report.
 
 ## Features
@@ -11,6 +13,8 @@ BizGPT is a multi-agent "business consultant" built with **LangGraph** and local
 - **Judge & replanning** — a judge agent reviews output quality and can trigger replanning.
 - **Final report** — prioritised recommendations, implementation plan, and risk/change review.
 - **Streamlit UI** with live workflow events.
+- **FastAPI REST API** (`/health`, `/consult`) with the same clarification flow via `thread_id`.
+- **Docker image** for the API, with a `/health` healthcheck.
 
 ## Architecture
 
@@ -22,6 +26,9 @@ nodes/     Pipeline steps (intent router, profiler, clarification, planner, diag
 graph/     State definition (state.py) and graph wiring (graph.py)
 prompts/   One prompt template per agent/node (.txt)
 app/       Streamlit frontend
+api/       FastAPI REST interface
+config.py  Settings (models, Ollama URL, logging, LLM retries) from env vars
+tests/     Offline pytest suite (API, graph routing, state)
 main.py    CLI entry point
 ```
 
@@ -66,6 +73,45 @@ See `.env.example`. All are optional.
 
 Never commit your `.env` file.
 
-## Roadmap
+## REST API
 
-Planned work (config module, logging, tests, CI, FastAPI, Docker, deployment) is tracked in [ROADMAP.md](ROADMAP.md).
+```bash
+uvicorn api.main:app --host 0.0.0.0 --port 8000
+```
+
+- `GET /health` — liveness check.
+- `POST /consult` — body `{"message": "...", "thread_id": null}`. Returns `status` `needs_clarification` (with a `question`) or `completed` (with a `report`). Send the answer back with the same `thread_id` to resume.
+
+Docker:
+
+```bash
+docker build -t bizgpt .
+docker run -p 8000:8000 -e BIZGPT_OLLAMA_BASE_URL=http://host.docker.internal:11434 bizgpt
+```
+
+## Model configuration
+
+Settings are read from `BIZGPT_*` environment variables (see `config.py`). Defaults:
+
+| Variable | Default | Used by |
+| --- | --- | --- |
+| `BIZGPT_AGENT_MODEL` | `phi3:mini` | specialist agents, profiler, chat router |
+| `BIZGPT_CONSULTANT_MODEL` | `qwen3:8b` | final consultant synthesis |
+| `BIZGPT_JUDGE_MODEL` | `llama3.2:3b` | judge and research-gap analyzer |
+| `BIZGPT_OLLAMA_BASE_URL` | Ollama default | Ollama server |
+
+Pull every model you use (e.g. `ollama pull qwen3:8b`).
+
+## Tests & CI
+
+```bash
+pip install -r requirements-dev.txt
+pytest
+ruff check . && ruff format --check .
+```
+
+Tests run offline (no LLM or API keys). GitHub Actions runs ruff and pytest on every push to `main`.
+
+## Status
+
+The API, Docker image, config module, logging, tests and CI on the roadmap are done; CI passes on `main`. The tests use stubs, so answer quality depends on the local models you pick and has not been benchmarked. Remaining ideas are in [ROADMAP.md](ROADMAP.md).
