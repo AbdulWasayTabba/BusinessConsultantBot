@@ -18,6 +18,12 @@ class FakeWorkflow:
         if not isinstance(payload, dict):
             self.interrupt = False
 
+    def stream(self, payload, config, stream_mode):
+        self.invoke(payload, config)
+        yield {"planner": {}}
+        if self.interrupt:
+            yield {"__interrupt__": ()}
+
     def get_state(self, config):
         if self.interrupt:
             task = SimpleNamespace(interrupts=[SimpleNamespace(value={"question": "Budget?"})])
@@ -52,3 +58,13 @@ def test_consult_clarification_then_resume(client):
 def test_consult_rejects_empty_message(client):
     c, _ = client
     assert c.post("/consult", json={"message": ""}).status_code == 422
+
+
+def test_consult_stream_emits_nodes_then_terminal_event(client):
+    c, _ = client
+    body = c.post("/consult/stream", json={"message": "Grow my bakery"}).text
+    assert "event: start" in body and '"node": "planner"' in body
+    assert "event: clarification" in body and "__interrupt__" not in body
+    tid = body.split('"thread_id": "')[1].split('"')[0]
+    body2 = c.post("/consult/stream", json={"message": "$5k", "thread_id": tid}).text
+    assert "event: completed" in body2 and '"report": "Do X"' in body2

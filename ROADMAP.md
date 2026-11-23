@@ -14,7 +14,7 @@
 - [x] Add FastAPI REST API exposing the consultant graph (/health, /consult)
 - [x] Add Dockerfile + .dockerignore
 - [x] Add docker-compose.yml
-- [ ] Add streaming responses endpoint
+- [x] Add streaming responses endpoint
 - [ ] Add conversation/session persistence (LangGraph checkpointer, SQLite then Postgres-ready)
 - [ ] Add rate limiting + API key auth
 - [ ] Add type hints + mypy across nodes
@@ -41,3 +41,4 @@
 - 2026-11-20: feat: add FastAPI service `api/main.py` (`GET /health`, `POST /consult` with thread_id-based clarification resume via LangGraph interrupts; graph loaded lazily, failures -> 502) plus offline tests `tests/test_api.py` using a fake workflow. Run: `uvicorn api.main:app`. Tests skip locally (no fastapi in local Python); CI installs it.
 - 2026-11-21: chore: add multi-stage `Dockerfile` (python:3.11-slim, venv builder stage, non-root user, HEALTHCHECK on `/health`, runs `uvicorn api.main:app` on :8000) and `.dockerignore` (excludes .env/secrets, VCS, caches, tests). Ollama reached via `BIZGPT_OLLAMA_BASE_URL`. Not built locally (no Docker run in automation).
 - 2026-11-22: Added docker-compose.yml (API + Ollama with persistent model volume) and a Docker section in README.
+- 2026-11-23: feat: add `POST /consult/stream` (Server-Sent Events: `start`, per-node `node`, then `clarification`/`completed`/`error`) sharing input/report helpers with `/consult`; added fake-stream API test. Lint/format pass locally; pytest could not run locally (no deps), CI verifies.
