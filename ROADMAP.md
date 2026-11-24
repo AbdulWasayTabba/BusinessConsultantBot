@@ -15,7 +15,7 @@
 - [x] Add Dockerfile + .dockerignore
 - [x] Add docker-compose.yml
 - [x] Add streaming responses endpoint
-- [ ] Add conversation/session persistence (LangGraph checkpointer, SQLite then Postgres-ready)
+- [x] Add conversation/session persistence (LangGraph checkpointer, SQLite then Postgres-ready)
 - [ ] Add rate limiting + API key auth
 - [ ] Add type hints + mypy across nodes
 - [ ] Add deployment guide (Render/Railway/Fly.io) to README
@@ -42,3 +42,4 @@
 - 2026-11-21: chore: add multi-stage `Dockerfile` (python:3.11-slim, venv builder stage, non-root user, HEALTHCHECK on `/health`, runs `uvicorn api.main:app` on :8000) and `.dockerignore` (excludes .env/secrets, VCS, caches, tests). Ollama reached via `BIZGPT_OLLAMA_BASE_URL`. Not built locally (no Docker run in automation).
 - 2026-11-22: Added docker-compose.yml (API + Ollama with persistent model volume) and a Docker section in README.
 - 2026-11-23: feat: add `POST /consult/stream` (Server-Sent Events: `start`, per-node `node`, then `clarification`/`completed`/`error`) sharing input/report helpers with `/consult`; added fake-stream API test. Lint/format pass locally; pytest could not run locally (no deps), CI verifies.
+- 2026-11-24: feat: add `graph/checkpointer.py` — `get_checkpointer()` picks SQLite (`BIZGPT_CHECKPOINT_DB=path`) or in-memory, falling back to memory if `langgraph-checkpoint-sqlite` is missing; graph uses it, dep + `.env.example` entry added, tests in `tests/test_checkpointer.py`. Postgres backend can slot into the same factory later.

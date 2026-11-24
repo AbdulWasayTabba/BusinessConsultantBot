@@ -1,6 +1,5 @@
 import pprint
 
-from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, START, StateGraph
 from langgraph.types import Send
 
@@ -12,6 +11,7 @@ from agents.finance_agent import finance_agent
 from agents.market_agent import market_agent
 from agents.marketing_agent import marketing_agent
 from agents.operations_agent import operations_agent
+from graph.checkpointer import get_checkpointer
 from graph.state import BizGPTState
 from nodes.business_profiler import business_profiler
 from nodes.chat_agent import chat_agent
@@ -237,6 +237,6 @@ graph.add_edge("risk_change_reviewer", "report_generator")
 graph.add_edge("report_generator", END)
 
 
-checkpointer = MemorySaver()
+checkpointer = get_checkpointer()
 
 workflow = graph.compile(checkpointer=checkpointer)
