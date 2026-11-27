@@ -12,9 +12,11 @@ from functools import lru_cache
 from typing import Any, Literal
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
+
+from api.security import require_client
 
 load_dotenv()
 
@@ -80,7 +82,9 @@ def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
-@app.post("/consult", response_model=ConsultResponse)
+@app.post(
+    "/consult", response_model=ConsultResponse, dependencies=[Depends(require_client)]
+)
 def consult(req: ConsultRequest) -> ConsultResponse:
     workflow = get_workflow()
     thread_id = req.thread_id or str(uuid.uuid4())
@@ -106,7 +110,7 @@ def _sse(event: str, data: dict) -> str:
     return f"event: {event}\ndata: {json.dumps(data, default=str)}\n\n"
 
 
-@app.post("/consult/stream")
+@app.post("/consult/stream", dependencies=[Depends(require_client)])
 def consult_stream(req: ConsultRequest) -> StreamingResponse:
     """Server-Sent Events version of /consult.
 

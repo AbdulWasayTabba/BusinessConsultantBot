@@ -16,7 +16,7 @@
 - [x] Add docker-compose.yml
 - [x] Add streaming responses endpoint
 - [x] Add conversation/session persistence (LangGraph checkpointer, SQLite then Postgres-ready)
-- [ ] Add rate limiting + API key auth
+- [x] Add rate limiting + API key auth
 - [ ] Add type hints + mypy across nodes
 - [ ] Add deployment guide (Render/Railway/Fly.io) to README
 - [ ] Add LICENSE (MIT) and CONTRIBUTING.md
@@ -43,3 +43,4 @@
 - 2026-11-22: Added docker-compose.yml (API + Ollama with persistent model volume) and a Docker section in README.
 - 2026-11-23: feat: add `POST /consult/stream` (Server-Sent Events: `start`, per-node `node`, then `clarification`/`completed`/`error`) sharing input/report helpers with `/consult`; added fake-stream API test. Lint/format pass locally; pytest could not run locally (no deps), CI verifies.
 - 2026-11-24: feat: add `graph/checkpointer.py` — `get_checkpointer()` picks SQLite (`BIZGPT_CHECKPOINT_DB=path`) or in-memory, falling back to memory if `langgraph-checkpoint-sqlite` is missing; graph uses it, dep + `.env.example` entry added, tests in `tests/test_checkpointer.py`. Postgres backend can slot into the same factory later.
+- 2026-11-28: feat: add `api/security.py` — `require_client` dependency on `/consult` and `/consult/stream` enforcing `X-API-Key` against `BIZGPT_API_KEYS` (off when empty) and a per-client sliding-window limit `BIZGPT_RATE_LIMIT`/min (429 + `Retry-After`; in-memory, single-process). `/health` stays public; tests in `tests/test_security.py`.
