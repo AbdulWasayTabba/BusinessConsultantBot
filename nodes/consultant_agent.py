@@ -22,7 +22,7 @@ with open("prompts/consultant_agent.txt") as f:
     prompt = f.read()
 
 
-def consultant_agent(state: BizGPTState):
+def consultant_agent(state: BizGPTState) -> dict:
     logger.info("node_enter", extra={"node": "consultant_agent"})
     result = llm_struct.invoke(f"""
         {prompt} 

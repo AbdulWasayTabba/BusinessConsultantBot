@@ -30,7 +30,7 @@ with open("prompts/dynamic_agent_selection.txt") as f:
     prompt = f.read()
 
 
-def dynamic_agent_selection(state: BizGPTState):
+def dynamic_agent_selection(state: BizGPTState) -> dict:
     logger.info("node_enter", extra={"node": "dynamic_agent_selection"})
 
     result = struct_llm.invoke(

@@ -22,7 +22,7 @@ with open("prompts/implementation_planner.txt") as f:
     prompt = f.read()
 
 
-def implementation_planner(state: BizGPTState):
+def implementation_planner(state: BizGPTState) -> dict:
     logger.info("node_enter", extra={"node": "implementation_planner"})
 
     result = llm_struct.invoke(

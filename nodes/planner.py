@@ -19,7 +19,7 @@ with open("prompts/planner.txt") as f:
     prompt = f.read()
 
 
-def planner(state: BizGPTState):
+def planner(state: BizGPTState) -> dict:
     logger.info("node_enter", extra={"node": "planner"})
 
     result = struct_llm.invoke(

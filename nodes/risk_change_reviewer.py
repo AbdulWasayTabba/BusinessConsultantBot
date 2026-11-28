@@ -22,7 +22,7 @@ with open("prompts/risk_change_reviewer.txt") as f:
     prompt = f.read()
 
 
-def risk_change_reviewer(state: BizGPTState):
+def risk_change_reviewer(state: BizGPTState) -> dict:
     logger.info("node_enter", extra={"node": "risk_change_reviewer"})
     result = llm_struct.invoke(
         f"""

@@ -22,7 +22,7 @@ with open("prompts/research_synthesizer.txt") as f:
     prompt = f.read()
 
 
-def research_synthesizer(state: BizGPTState):
+def research_synthesizer(state: BizGPTState) -> dict:
     logger.info("node_enter", extra={"node": "research_synthesizer"})
     # Create a string to hold all the collected research
     combined_research = ""

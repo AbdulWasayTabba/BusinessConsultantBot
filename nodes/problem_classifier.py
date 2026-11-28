@@ -33,7 +33,7 @@ with open("prompts/problem_classifier.txt") as f:
     prompt = f.read()
 
 
-def problem_classifier(state: BizGPTState):
+def problem_classifier(state: BizGPTState) -> dict:
     logger.info("node_enter", extra={"node": "problem_classifier"})
 
     result = struct_llm.invoke(

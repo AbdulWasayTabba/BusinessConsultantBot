@@ -17,7 +17,7 @@ with open("prompts/missing_info.txt") as f:
     prompt = f.read()
 
 
-def missing_info(state: BizGPTState):
+def missing_info(state: BizGPTState) -> dict:
     result = llm_struct.invoke(f"""{prompt}
                     User Input: {state.get("user_input", "")}
                     Business Profile: {state.get("business_profile", {})}""")

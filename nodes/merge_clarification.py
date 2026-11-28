@@ -1,4 +1,7 @@
-def merge_clarification(state):
+from graph.state import BizGPTState
+
+
+def merge_clarification(state: BizGPTState) -> dict:
     original_input = state.get("user_input", "")
 
     clarification = state.get("user_clarification", "")

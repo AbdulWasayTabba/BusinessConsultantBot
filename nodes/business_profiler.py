@@ -26,7 +26,7 @@ with open("prompts/business_profiler.txt") as f:
     prompt = f.read()
 
 
-def business_profiler(state: BizGPTState):
+def business_profiler(state: BizGPTState) -> dict:
     logger.info("node_enter", extra={"node": "business_profiler"})
     result = llm_struct.invoke(f"{prompt} \n user input : {state['user_input']}")
 

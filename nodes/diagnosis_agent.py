@@ -21,7 +21,7 @@ llm = get_llm()
 structured_llm = llm.with_structured_output(DiagnosisOutput)
 
 
-def diagnosis_agent(state: BizGPTState):
+def diagnosis_agent(state: BizGPTState) -> dict:
     logger.info("node_enter", extra={"node": "diagnosis_agent"})
     result = structured_llm.invoke(
         f"{prompt}\n business profile {state['business_profile']} \n user input : {state['user_input']}"

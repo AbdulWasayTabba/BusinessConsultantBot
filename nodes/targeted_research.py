@@ -21,7 +21,7 @@ with open("prompts/targeted_research.txt") as f:
     prompt = f.read()
 
 
-def targeted_research(state: BizGPTState):
+def targeted_research(state: BizGPTState) -> dict:
     logger.info("node_enter", extra={"node": "targeted_research"})
 
     result = llm_struct.invoke(

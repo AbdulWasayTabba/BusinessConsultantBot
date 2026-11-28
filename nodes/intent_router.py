@@ -22,7 +22,7 @@ with open("prompts/intent_router.txt") as f:
     prompt = f.read()
 
 
-def intent_router(state: BizGPTState):
+def intent_router(state: BizGPTState) -> dict:
     logger.info("node_enter", extra={"node": "intent_router"})
     result = structured_llm.invoke(f"{prompt}\n\nUser Input:\n{state.get('user_input', '')}")
     return {"route_type": result.route_type}

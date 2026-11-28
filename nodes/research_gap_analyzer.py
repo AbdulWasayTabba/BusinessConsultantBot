@@ -22,7 +22,7 @@ with open("prompts/research_gap_analyzer.txt") as f:
     prompt = f.read()
 
 
-def research_gap_analyzer(state: BizGPTState):
+def research_gap_analyzer(state: BizGPTState) -> dict:
     logger.info("node_enter", extra={"node": "research_gap_analyzer"})
 
     result = llm_struct.invoke(

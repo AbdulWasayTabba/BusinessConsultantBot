@@ -25,7 +25,7 @@ with open("prompts/report_generator.txt") as f:
     prompt = f.read()
 
 
-def report_generator(state: BizGPTState):
+def report_generator(state: BizGPTState) -> dict:
     logger.info("node_enter", extra={"node": "report_generator"})
     result = llm_struct.invoke(
         f"""

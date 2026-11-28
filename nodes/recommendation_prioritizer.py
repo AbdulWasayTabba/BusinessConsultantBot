@@ -22,7 +22,7 @@ with open("prompts/recommendation_prioritizer.txt") as f:
     prompt = f.read()
 
 
-def recommendation_prioritizer(state: BizGPTState):
+def recommendation_prioritizer(state: BizGPTState) -> dict:
     logger.info("node_enter", extra={"node": "recommendation_prioritizer"})
 
     result = llm_struct.invoke(
